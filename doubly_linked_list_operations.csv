@@ -1,149 +1,91 @@
-Line No,Code
-1,#include <stdio.h>
-2,#include <stdlib.h>
-3,
-4,struct Node {
-5,    int data;
-6,    struct Node* prev;
-7,    struct Node* next;
-8,};
-9,
-10,struct Node* head = NULL;
-11,
-12,struct Node* createNode(int data) {
-13,    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
-14,    if (newNode == NULL) {
-15,"        printf(""Memory allocation failed\n"");"
-16,        return NULL;
-17,    }
-18,    newNode->data = data;
-19,    newNode->prev = NULL;
-20,    newNode->next = NULL;
-21,    return newNode;
-22,}
-23,
-24,void insertAtFront(int data) {
-25,    struct Node* newNode = createNode(data);
-26,    if (newNode == NULL) return;
-27,
-28,    if (head == NULL) {
-29,        head = newNode;
-30,    } else {
-31,        newNode->next = head;
-32,        head->prev = newNode;
-33,        head = newNode;
-34,    }
-35,"    printf(""Inserted %d at front\n"", data);"
-36,}
-37,
-38,void insertAtEnd(int data) {
-39,    struct Node* newNode = createNode(data);
-40,    if (newNode == NULL) return;
-41,
-42,    if (head == NULL) {
-43,        head = newNode;
-44,    } else {
-45,        struct Node* temp = head;
-46,        while (temp->next != NULL) {
-47,            temp = temp->next;
-48,        }
-49,        temp->next = newNode;
-50,        newNode->prev = temp;
-51,    }
-52,"    printf(""Inserted %d at end\n"", data);"
-53,}
-54,
-55,void deleteAtFront() {
-56,    if (head == NULL) {
-57,"        printf(""List is empty\n"");"
-58,        return;
-59,    }
-60,    struct Node* temp = head;
-61,    if (head->next == NULL) {
-62,        head = NULL;
-63,    } else {
-64,        head = head->next;
-65,        head->prev = NULL;
-66,    }
-67,"    printf(""Deleted %d from front\n"", temp->data);"
-68,    free(temp);
-69,}
-70,
-71,void deleteAtEnd() {
-72,    if (head == NULL) {
-73,"        printf(""List is empty\n"");"
-74,        return;
-75,    }
-76,    struct Node* temp = head;
-77,    if (head->next == NULL) {
-78,"        printf(""Deleted %d from end\n"", head->data);"
-79,        free(head);
-80,        head = NULL;
-81,        return;
-82,    }
-83,    while (temp->next != NULL) {
-84,        temp = temp->next;
-85,    }
-86,"    printf(""Deleted %d from end\n"", temp->data);"
-87,    temp->prev->next = NULL;
-88,    free(temp);
-89,}
-90,
-91,void displayList() {
-92,    if (head == NULL) {
-93,"        printf(""List is empty\n"");"
-94,        return;
-95,    }
-96,    struct Node* temp = head;
-97,"    printf(""Doubly Linked List: "");"
-98,    while (temp != NULL) {
-99,"        printf(""%d "", temp->data);"
-100,        temp = temp->next;
-101,    }
-102,"    printf(""\n"");"
-103,}
-104,
-105,int main() {
-106,"    int choice, value;"
-107,
-108,    while (1) {
-109,"        printf(""\n--- Doubly Linked List Operations ---\n"");"
-110,"        printf(""1. Insert at front\n"");"
-111,"        printf(""2. Insert at end\n"");"
-112,"        printf(""3. Delete at front\n"");"
-113,"        printf(""4. Delete at end\n"");"
-114,"        printf(""5. Display list\n"");"
-115,"        printf(""6. Exit\n"");"
-116,"        printf(""Enter your choice: "");"
-117,"        scanf(""%d"", &choice);"
-118,
-119,        switch (choice) {
-120,            case 1:
-121,"                printf(""Enter value to insert at front: "");"
-122,"                scanf(""%d"", &value);"
-123,                insertAtFront(value);
-124,                break;
-125,            case 2:
-126,"                printf(""Enter value to insert at end: "");"
-127,"                scanf(""%d"", &value);"
-128,                insertAtEnd(value);
-129,                break;
-130,            case 3:
-131,                deleteAtFront();
-132,                break;
-133,            case 4:
-134,                deleteAtEnd();
-135,                break;
-136,            case 5:
-137,                displayList();
-138,                break;
-139,            case 6:
-140,"                printf(""Exiting...\n"");"
-141,                exit(0);
-142,            default:
-143,"                printf(""Invalid choice. Try again.\n"");"
-144,        }
-145,    }
-146,
-147,    return 0;
-148,}
+#include<stdio.h>
+#include<string.h> #include<stdlib.h>
+struct node
+{
+char ssn[25], name[25], dept[10], designation[25];  long int sal, phoneno;
+ 	struct node *llink;  	struct node *rlink;
+};
+typedef struct node* NODE; NODE first = NULL; int count = 0;
+NODE getNode()
+{
+ 	NODE newnode;
+newnode = (NODE) malloc(sizeof(struct node)); printf("\nEnter the Employee ssn, Name, Dept, Designation, Salary, PhoneNo \n"); scanf("%s %s %s %s %ld %ld", newnode->ssn ,newnode->name, newnode->dept,  newnode->designation,&newnode->sal,&newnode->phoneno);
+if( newnode== NULL)
+{ printf("\nRunning out of memory"); exit(0);
+}
+newnode->llink = NULL; newnode->rlink = NULL; count++; return newnode;
+}
+void insertAtFront()
+{
+NODE temp; temp = getNode(); if(first == NULL)
+{ first=temp; return; } temp->rlink = first; first->llink = temp; first=temp; return;
+}
+void deleteAtFront() {
+NODE temp;
+if(first == NULL)
+{ printf("\nDoubly Linked List is empty"); return;
+} temp = first; first = first->rlink; temp->rlink = NULL; first->llink = NULL;
+printf("\nThe employee node with the ssn:%s is deleted", temp->ssn); free(temp); count--; return;
+}
+void insertAtEnd()
+{
+NODE cur, temp; temp = getNode(); if(first == NULL)
+{ first=temp; return; } cur = first; while(cur->rlink!=NULL)
+{ cur = cur->rlink; } cur->rlink = temp; temp->llink = cur; return;
+}
+void deleteAtEnd()
+{
+NODE prev, cur; if(first == NULL)
+{
+	printf("\nDoubly Linked List is empty"); 	return;
+} if(first->rlink == NULL) 	 
+{ printf("\nThe employee node with the ssn:%s is deleted", first->ssn); free(first); first=NULL; count--; return;
+} prev = NULL; cur = first;
+while(cur->rlink!=NULL)
+{
+	prev = cur; 	cur = cur->rlink;
+}
+cur->llink = NULL; printf("\nThe employee node with the ssn:%s is deleted", cur->ssn); free(cur); prev->rlink = NULL; count--; return;
+}
+void displayStatus()
+{
+	NODE cur;  	int nodeno=1;
+if(first == NULL)
+{ printf("\n No Contents to display in DLL"); 	return;
+} printf("\nENode||\t SSN|\t Name|\t Department|\t Designation|\t Salary|\t Phone\n");
+cur = first;
+while(cur!=NULL)
+{ printf("\n %d\t %s\t %s\t %s\t\t%s\t\t %ld \t   %ld", nodeno, cur->ssn, cur->      name,  cur->dept,cur->designation, cur->sal, cur->phoneno); cur = cur->rlink; nodeno++;
+} printf("\n\nNo of employee nodes is %d",count);
+}
+void doubleEndedQueueDemo()
+{ int ch; while(1)
+{ printf("\nDemo Double Ended Queue Operation"); printf("\n1:InsertQueueFront \n2: DeleteQueueFront\n3:InsertQueueRear \n  4:DeleteQueueRear 
+\n5:DisplayStatus \n6: Exit \n");
+ 	scanf("%d", &ch);
+switch(ch) {
+case 1: insertAtFront(); 	 	break;
+ 	         case 2: deleteAtFront(); 	 	break;
+case 3: insertAtEnd();  	 	break;
+ 	          case 4: deleteAtEnd();  	 	break;
+ 	          case 5: displayStatus(); 	 	break;
+  	case 6: return;
+default: printf (“invalid choice\”); }
+}
+}
+void main()
+{
+ 	int ch, i, n;
+ 	while(1)
+ 	{
+ 	 	printf("\n~~~Menu~~~");
+ 	 	printf("\n Enter your choice for DLL operation \n");  	 	printf("\n1:Create DLL of Student Nodes");  	 	printf("\n2:DisplayStatus");  	 	printf("\n3: doubleEndedQueueDemo”)  	 	printf("\n4:Exit \n");  	 	printf("\nEnter your choice:");
+ 	 	scanf("%d", &ch);
+	 	switch(ch)
+	 	 	{
+ 	 	 	case 1 : printf("\nEnter the no of Employees: ");  	 	 	 	 scanf("%d", &n);  	 	 	 	 for(i=1; i<=n; i++)
+ 	 	 	 	 	insertAtEnd(); 	 	 break;  	 	 	case 2: displayStatus(); 	 	 	 break;  	 	 	case 3: doubleEndedQueueDemo(); 	 break;  	 	 	case 4: exit(0);
+	 	 	              default: printf("\nEnter the valid choice");
+	 	 	}
+	 	}
+}
