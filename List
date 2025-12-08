@@ -1,0 +1,518 @@
+======DLL=====
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node *prev;
+    struct Node *next;
+};
+
+struct Node *head = NULL;
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node *newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(0);
+    }
+    newNode->data = data;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// (a) Create DLL using end insertion
+void createDLL() {
+    int n, data, i;
+    printf("Enter number of nodes to create: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("Enter data for node %d: ", i + 1);
+        scanf("%d", &data);
+
+        struct Node *newNode = createNode(data);
+
+        if (head == NULL) {
+            head = newNode;
+        } else {
+            struct Node *temp = head;
+            while (temp->next != NULL)
+                temp = temp->next;
+            temp->next = newNode;
+            newNode->prev = temp;
+        }
+    }
+}
+
+// (b) Display DLL and count number of nodes
+void displayAndCount() {
+    struct Node *temp = head;
+    int count = 0;
+
+    if (temp == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    printf("DLL elements: ");
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+        count++;
+    }
+    printf("\nTotal nodes = %d\n", count);
+}
+
+// (c) Insertion at end
+void insertAtEnd(int data) {
+    struct Node *newNode = createNode(data);
+
+    if (head == NULL) {
+        head = newNode;
+        printf("Node inserted at end.\n");
+        return;
+    }
+
+    struct Node *temp = head;
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = newNode;
+    newNode->prev = temp;
+    printf("Node inserted at end.\n");
+}
+
+// (d) Insertion at front
+void insertAtFront(int data) {
+    struct Node *newNode = createNode(data);
+
+    if (head == NULL) {
+        head = newNode;
+    } else {
+        newNode->next = head;
+        head->prev = newNode;
+        head = newNode;
+    }
+    printf("Node inserted at front.\n");
+}
+
+// (e) Deletion at end
+void deleteAtEnd() {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    struct Node *temp = head;
+
+    // Only one node
+    if (temp->next == NULL) {
+        free(temp);
+        head = NULL;
+        printf("Last node deleted. List is now empty.\n");
+        return;
+    }
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->prev->next = NULL;
+    free(temp);
+    printf("Node deleted from end.\n");
+}
+
+// (f) Deletion at front
+void deleteAtFront() {
+    if (head == NULL) {
+        printf("List is empty.\n");
+        return;
+    }
+
+    struct Node *temp = head;
+
+    if (head->next == NULL) {
+        head = NULL;
+        free(temp);
+    } else {
+        head = head->next;
+        head->prev = NULL;
+        free(temp);
+    }
+    printf("Node deleted from front.\n");
+}
+
+// Main menu-driven program
+int main() {
+    int choice, data;
+
+    while (1) {
+        printf("\n=== DOUBLY LINKED LIST MENU ===\n");
+        printf("1. Create DLL using End Insertion\n");
+        printf("2. Display and Count Nodes\n");
+        printf("3. Insert at End\n");
+        printf("4. Delete at End\n");
+        printf("5. Insert at Front\n");
+        printf("6. Delete at Front\n");
+        printf("7. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                createDLL();
+                break;
+            case 2:
+                displayAndCount();
+                break;
+            case 3:
+                printf("Enter data to insert at end: ");
+                scanf("%d", &data);
+                insertAtEnd(data);
+                break;
+            case 4:
+                deleteAtEnd();
+                break;
+            case 5:
+                printf("Enter data to insert at front: ");
+                scanf("%d", &data);
+                insertAtFront(data);
+                break;
+            case 6:
+                deleteAtFront();
+                break;
+            case 7:
+                printf("Exiting program.\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+    return 0;
+}
+#######DLL EMPLOYEE ######
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Structure definition for Employee Node
+struct Employee {
+    char SSN[20];
+    char Name[50];
+    char Dept[30];
+    float Sal;
+    struct Employee *prev;
+    struct Employee *next;
+};
+
+struct Employee *head = NULL;
+
+// Function to create a new node
+struct Employee* createNode(char ssn[], char name[], char dept[], float sal) {
+    struct Employee *newNode = (struct Employee*)malloc(sizeof(struct Employee));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(0);
+    }
+    strcpy(newNode->SSN, ssn);
+    strcpy(newNode->Name, name);
+    strcpy(newNode->Dept, dept);
+    newNode->Sal = sal;
+    newNode->prev = newNode->next = NULL;
+    return newNode;
+}
+
+// Create DLL (asking number of employees)
+void createDLL() {
+    int n, i;
+    char ssn[20], name[50], dept[30];
+    float sal;
+
+    printf("Enter number of employees: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("\nEnter details of employee %d:\n", i + 1);
+        printf("SSN: ");
+        scanf("%s", ssn);
+        printf("Name: ");
+        scanf("%s", name);
+        printf("Department: ");
+        scanf("%s", dept);
+        printf("Salary: ");
+        scanf("%f", &sal);
+
+        struct Employee *newNode = createNode(ssn, name, dept, sal);
+
+        if (head == NULL)
+            head = newNode;
+        else {
+            struct Employee *temp = head;
+            while (temp->next != NULL)
+                temp = temp->next;
+            temp->next = newNode;
+            newNode->prev = temp;
+        }
+    }
+}
+
+// (b) Display DLL and count nodes
+void displayAndCount() {
+    struct Employee *temp = head;
+    int count = 0;
+
+    if (temp == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    while (temp != NULL) {
+        printf("SSN: %s | Name: %s | Dept: %s | Salary: %.2f\n",
+               temp->SSN, temp->Name, temp->Dept, temp->Sal);
+        temp = temp->next;
+        count++;
+    }
+    printf("Total number of employees: %d\n", count);
+}
+
+// (c) Deletion at end
+void deleteAtEnd() {
+    if (head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    struct Employee *temp = head;
+
+    // Only one node
+    if (temp->next == NULL) {
+        printf("\nDeleted Employee: %s | %s\n", temp->SSN, temp->Name);
+        free(temp);
+        head = NULL;
+        return;
+    }
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    printf("\nDeleted Employee: %s | %s\n", temp->SSN, temp->Name);
+    temp->prev->next = NULL;
+    free(temp);
+}
+
+// (d) Insertion at front
+void insertAtFront() {
+    char ssn[20], name[50], dept[30];
+    float sal;
+
+    printf("\nEnter details of Employee to insert at front:\n");
+    printf("SSN: "); scanf("%s", ssn);
+    printf("Name: "); scanf("%s", name);
+    printf("Department: "); scanf("%s", dept);
+    printf("Salary: "); scanf("%f", &sal);
+
+    struct Employee *newNode = createNode(ssn, name, dept, sal);
+
+    if (head == NULL)
+        head = newNode;
+    else {
+        newNode->next = head;
+        head->prev = newNode;
+        head = newNode;
+    }
+
+    printf("\nEmployee record inserted at front.\n");
+}
+
+// (e) Deletion at front
+void deleteAtFront() {
+    if (head == NULL) {
+        printf("\nList is empty.\n");
+        return;
+    }
+
+    struct Employee *temp = head;
+    printf("\nDeleted Employee: %s | %s\n", temp->SSN, temp->Name);
+
+    if (head->next == NULL) {
+        free(temp);
+        head = NULL;
+    } else {
+        head = head->next;
+        head->prev = NULL;
+        free(temp);
+    }
+}
+
+// Main function (menu-driven)
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n1. Create DLL using End Insertion\n");
+        printf("2. Display and Count Nodes\n");
+        printf("3. Delete at End\n");
+        printf("4. Insert at Front\n");
+        printf("5. Delete at Front\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: createDLL(); break;
+            case 2: displayAndCount(); break;
+            case 3: deleteAtEnd(); break;
+            case 4: insertAtFront(); break;
+            case 5: deleteAtFront(); break;
+            case 6: printf("\nExiting program.\n"); exit(0);
+            default: printf("\nInvalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
+#######CDLL EMPLOYEE#######
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Employee {
+    char SSN[20], Name[30], Dept[20];
+    float Sal;
+    struct Employee *prev, *next;
+};
+
+struct Employee *last = NULL;   // last node in CDLL
+
+// Function to create a new node (data taken from user)
+struct Employee* createNode() {
+    char ssn[20], name[30], dept[20];
+    float sal;
+
+    printf("\nEnter Employee details:\n");
+    printf("SSN: ");  scanf("%s", ssn);
+    printf("Name: "); scanf("%s", name);
+    printf("Department: "); scanf("%s", dept);
+    printf("Salary: "); scanf("%f", &sal);
+
+    struct Employee *newNode = (struct Employee*)malloc(sizeof(struct Employee));
+    if (newNode == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(0);
+    }
+
+    strcpy(newNode->SSN, ssn);
+    strcpy(newNode->Name, name);
+    strcpy(newNode->Dept, dept);
+    newNode->Sal = sal;
+    newNode->prev = newNode->next = NULL;
+
+    return newNode;
+}
+
+// Create CDLL using end insertion
+void createCDLL() {
+    char choice;
+    do {
+        struct Employee *newnode = createNode();
+        if (last == NULL) {
+            last = newnode;
+            last->next = last->prev = last;
+        } else {
+            newnode->next = last->next;    // first node
+            newnode->prev = last;
+            last->next->prev = newnode;
+            last->next = newnode;
+            last = newnode;
+        }
+        printf("Add another Employee? (y/n): ");
+        scanf(" %c", &choice);
+    } while (choice == 'y' || choice == 'Y');
+}
+
+// Display and count nodes
+void displayCDLL() {
+    if (last == NULL) {
+        printf("\nCDLL is Empty!\n");
+        return;
+    }
+
+    struct Employee *temp = last->next;   // first node
+    int count = 0;
+
+    printf("\nEmployee Details:\n");
+    do {
+        printf("SSN: %s | Name: %s | Dept: %s | Salary: %.2f\n",
+               temp->SSN, temp->Name, temp->Dept, temp->Sal);
+        temp = temp->next;
+        count++;
+    } while (temp != last->next);
+
+    printf("\nTotal Number of Employees: %d\n", count);
+}
+
+// Insert at end in CDLL
+void insertEnd() {
+    struct Employee *newnode = createNode();
+
+    if (last == NULL) {
+        last = newnode;
+        last->next = last->prev = last;
+    } else {
+        newnode->next = last->next;   // first node
+        newnode->prev = last;
+        last->next->prev = newnode;
+        last->next = newnode;
+        last = newnode;
+    }
+    printf("\nNode inserted successfully at end.\n");
+}
+
+// Delete at front (first node = last->next)
+void deleteFront() {
+    if (last == NULL) {
+        printf("\nCDLL is Empty! No deletion possible.\n");
+        return;
+    }
+
+    struct Employee *temp = last->next;   // first node
+
+    // Only one node
+    if (last == temp) {
+        printf("\nDeleted Employee: %s\n", temp->Name);
+        free(temp);
+        last = NULL;
+    } else {
+        printf("\nDeleted Employee: %s\n", temp->Name);
+        last->next = temp->next;
+        temp->next->prev = last;
+        free(temp);
+    }
+}
+
+// Main menu
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n----- Circular Doubly Linked List Menu -----\n");
+        printf("1. Create CDLL\n");
+        printf("2. Display & Count Nodes\n");
+        printf("3. Insert at End\n");
+        printf("4. Delete at Front\n");
+        printf("5. Exit\n");
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: createCDLL(); break;
+            case 2: displayCDLL(); break;
+            case 3: insertEnd(); break;
+            case 4: deleteFront(); break;
+            case 5: exit(0);
+            default: printf("Invalid Choice! Try again.\n");
+        }
+    }
+    return 0;
+}
