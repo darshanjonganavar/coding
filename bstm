@@ -1,0 +1,61 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *left, *right;
+};
+
+struct node* insert(struct node* root, int x) {
+    if (root == NULL) {
+        root = (struct node*)malloc(sizeof(struct node));
+        root->data = x;
+        root->left = root->right = NULL;
+        return root;
+    }
+    if (x < root->data)
+        root->left = insert(root->left, x);
+    else
+        root->right = insert(root->right, x);
+    return root;
+}
+
+int findMin(struct node* root) {
+    while (root->left != NULL)
+        root = root->left;
+    return root->data;
+}
+
+int findMax(struct node* root) {
+    while (root->right != NULL)
+        root = root->right;
+    return root->data;
+}
+
+int main() {
+    struct node* root = NULL;
+    int arr[] = {65, 49, 55, 72, 38, 15, 24, 74, 67, 85, 12};
+    int n = 11, i, ch;
+
+    do {
+        printf("\n1.Create BST\n2.Find Min & Max\n3.Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &ch);
+
+        switch(ch) {
+            case 1:
+                root = NULL;
+                for (i = 0; i < n; i++)
+                    root = insert(root, arr[i]);
+                printf("BST Created\n");
+                break;
+
+            case 2:
+                printf("Minimum value = %d\n", findMin(root));
+                printf("Maximum value = %d\n", findMax(root));
+                break;
+        }
+    } while (ch != 3);
+
+    return 0;
+}
