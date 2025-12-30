@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct node {
+    int data;
+    struct node *prev, *next;
+};
+struct node *head = NULL;
+
+void insert_front() {
+    struct node *new = malloc(sizeof(struct node));
+    printf("Enter data: ");
+    scanf("%d", &new->data);
+    new->prev = NULL;
+    new->next = head;
+    if(head) head->prev = new;
+    head = new;
+}
+
+void delete_front() {
+    if(head == NULL) return;
+    struct node *temp = head;
+    head = head->next;
+    if(head) head->prev = NULL;
+    free(temp);
+}
+
+void display() {
+    struct node *temp = head;
+    while(temp) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+}
+
+int main() {
+    int ch;
+    do {
+        printf("\n1.Insert Front\n2.Delete Front\n3.Display\n4.Exit\n");
+        scanf("%d", &ch);
+        switch(ch) {
+            case 1: insert_front(); break;
+            case 2: delete_front(); break;
+            case 3: display(); break;
+        }
+    } while(ch != 4);
+    return 0;
+}
