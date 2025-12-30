@@ -1,0 +1,23 @@
+#include <stdio.h>
+#define SIZE 10
+
+int hash(int k) { return k % SIZE; }
+
+int main() {
+    int table[SIZE], key, i, h;
+    for(i=0;i<SIZE;i++) table[i] = -1;
+
+    for(i=0;i<5;i++) {
+        printf("Enter key: ");
+        scanf("%d",&key);
+        h = hash(key);
+        while(table[h] != -1)
+            h = (h+1)%SIZE;
+        table[h] = key;
+    }
+
+    printf("Hash Table:\n");
+    for(i=0;i<SIZE;i++)
+        printf("%d -> %d\n",i,table[i]);
+    return 0;
+}
