@@ -1,0 +1,39 @@
+#include <stdio.h>
+int main() {
+    int a[50], n = 0, choice, pos, elem, i;
+    do {
+        printf("\n1.Create\n2.Display\n3.Insert\n4.Delete\n5.Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1:
+                printf("Enter number of elements: ");
+                scanf("%d", &n);
+                printf("Enter elements:\n");
+                for(i = 0; i < n; i++)
+                    scanf("%d", &a[i]);
+                break;
+            case 2:
+                printf("Array elements:\n");
+                for(i = 0; i < n; i++)
+                    printf("%d ", a[i]);
+                break;
+            case 3:
+                printf("Enter position and element: ");
+                scanf("%d %d", &pos, &elem);
+                for(i = n; i >= pos; i--)
+                    a[i] = a[i-1];
+                a[pos-1] = elem;
+                n++;
+                break;
+            case 4:
+                printf("Enter position to delete: ");
+                scanf("%d", &pos);
+                for(i = pos-1; i < n-1; i++)
+                    a[i] = a[i+1];
+                n--;
+                break;
+        }
+    } while(choice != 5);
+    return 0;
+}
