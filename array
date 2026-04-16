@@ -1,3 +1,4 @@
+KNN
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import datasets
@@ -33,3 +34,307 @@ print(confusion_matrix(y_test, y_pred))
 
 print("Classification Report")
 print(classification_report(y_test, y_pred))
+
+
+NAIVE
+from sklearn.naive_bayes import GaussianNB
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn import metrics
+
+dataset = load_iris()
+
+X = dataset.data
+y = dataset.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=1
+)
+
+gnb = GaussianNB()
+classifier = gnb.fit(X_train, y_train)
+
+y_pred = classifier.predict(X_test)
+
+print("Accuracy Report")
+print(metrics.classification_report(y_test, y_pred))
+
+print("Accuracy:", metrics.accuracy_score(y_test, y_pred))
+
+print("Confusion Matrix")
+print(metrics.confusion_matrix(y_test, y_pred))
+
+LR VS DT
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegressor
+import numpy as np
+import matplotlib.pyplot as plt
+
+x = np.linspace(0, 10, 100)
+
+y_linear = 2*x + 3 + np.random.randn(100)*0.5
+y_complex = np.sin(x) + np.random.randn(100)*0.2
+
+models = [LinearRegression(), DecisionTreeRegressor(max_depth=5)]
+
+for model in models:
+
+    model.fit(x.reshape(-1,1), y_linear)
+    y_pred_linear = model.predict(x.reshape(-1,1))
+
+    model.fit(x.reshape(-1,1), y_complex)
+    y_pred_complex = model.predict(x.reshape(-1,1))
+
+    plt.figure()
+
+    plt.plot(x, y_linear, label="True Linear")
+    plt.plot(x, y_pred_linear, label="Predicted")
+
+    plt.legend()
+    plt.show()
+
+SVM
+import numpy as np
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, confusion_matrix
+
+iris = datasets.load_iris()
+
+xtrain, xtest, ytrain, ytest = train_test_split(
+    iris.data[:, :2],
+    iris.target,
+    test_size=0.3,
+    random_state=42
+)
+
+scaler = StandardScaler()
+
+xtrain = scaler.fit_transform(xtrain)
+xtest = scaler.transform(xtest)
+
+model = SVC(kernel='linear', C=2)
+
+model.fit(xtrain, ytrain)
+
+ypred = model.predict(xtest)
+
+print("Accuracy:", accuracy_score(ytest, ypred))
+print("Confusion Matrix")
+print(confusion_matrix(ytest, ypred))
+
+DT
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+iris = load_iris()
+
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+clf = DecisionTreeClassifier(criterion='entropy')
+
+clf.fit(X_train, y_train)
+
+y_pred = clf.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+print("Classification Report")
+print(classification_report(y_test, y_pred))
+
+ADA BOOST
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+iris = load_iris()
+
+X = iris.data
+y = iris.target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2
+)
+
+base_model = DecisionTreeClassifier(max_depth=1)
+
+ada = AdaBoostClassifier(
+    estimator=base_model,
+    n_estimators=50
+)
+
+ada.fit(X_train, y_train)
+
+y_pred = ada.predict(X_test)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+
+GB+RF
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import RandomForestClassifier
+
+gb = GradientBoostingClassifier()
+
+gb.fit(X_train, y_train)
+
+y_pred = gb.predict(X_test)
+
+print("Gradient Boost Accuracy:", accuracy_score(y_test, y_pred))
+
+
+rf = RandomForestClassifier()
+
+rf.fit(X_train, y_train)
+
+y_pred = rf.predict(X_test)
+
+print("Random Forest Accuracy:", accuracy_score(y_test, y_pred))
+
+PERCEPTRON AND
+def activation(out, threshold):
+    return 1 if out >= threshold else 0
+
+def perceptron(and_input):
+
+    a=[0,0,1,1]
+    b=[0,1,0,1]
+    y=[0,0,0,1]
+
+    w=[1.4,1.5]
+    threshold=1
+    lr=0.1
+
+    i=0
+
+    while i<4:
+
+        sum = a[i]*w[0] + b[i]*w[1]
+        o = activation(sum, threshold)
+
+        if o != y[i]:
+
+            w[0] += lr*(y[i]-o)*a[i]
+            w[1] += lr*(y[i]-o)*b[i]
+
+            i=-1
+
+        i+=1
+
+    sum = and_input[0]*w[0] + and_input[1]*w[1]
+
+    return activation(sum, threshold)
+
+
+print("AND Output:", perceptron([1,1]))
+
+OR GATE
+def activation(out, threshold):
+    return 1 if out >= threshold else 0
+
+def perceptron(or_input):
+
+    a=[0,0,1,1]
+    b=[0,1,0,1]
+    y=[0,1,1,1]
+
+    w=[0.0,0.3]
+    threshold=0.4
+    lr=0.5
+
+    i=0
+
+    while i<4:
+
+        sum = a[i]*w[0] + b[i]*w[1]
+
+        o = activation(sum, threshold)
+
+        if o != y[i]:
+
+            w[0] += lr*(y[i]-o)*a[i]
+            w[1] += lr*(y[i]-o)*b[i]
+
+            i=-1
+
+        i+=1
+
+    sum = or_input[0]*w[0] + or_input[1]*w[1]
+
+    return activation(sum, threshold)
+
+
+print("OR Output:", perceptron([1,1]))
+
+NEURAL
+import numpy as np
+
+X = np.array(([2,9],[1,5],[3,6]), dtype=float)
+
+y = np.array(([92],[86],[89]), dtype=float)
+
+X = X / np.amax(X, axis=0)
+
+y = y / 100
+
+
+def sigmoid(x):
+    return 1/(1+np.exp(-x))
+
+def derivatives_sigmoid(x):
+    return x*(1-x)
+
+
+epoch = 7000
+lr = 0.1
+
+inputlayer = 2
+hiddenlayer = 3
+outputlayer = 1
+
+wh = np.random.uniform(size=(inputlayer, hiddenlayer))
+bh = np.random.uniform(size=(1, hiddenlayer))
+
+wout = np.random.uniform(size=(hiddenlayer, outputlayer))
+bout = np.random.uniform(size=(1, outputlayer))
+
+
+for i in range(epoch):
+
+    hinp = np.dot(X, wh) + bh
+    hlayer = sigmoid(hinp)
+
+    outinp = np.dot(hlayer, wout) + bout
+    output = sigmoid(outinp)
+
+    EO = y - output
+
+    d_output = EO * derivatives_sigmoid(output)
+
+    EH = d_output.dot(wout.T)
+
+    d_hidden = EH * derivatives_sigmoid(hlayer)
+
+    wout += hlayer.T.dot(d_output) * lr
+    wh += X.T.dot(d_hidden) * lr
+
+
+print("Input")
+print(X)
+
+print("Actual Output")
+print(y)
+
+print("Predicted Output")
+print(output)
