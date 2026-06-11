@@ -1,377 +1,826 @@
-LINEAR REGRESSION 
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
+PRIMS
+import java.util.*;
+
+public class prims
+{
+	public static void main(String[] args)
+	{
+		int cost[][] = new int[10][10];
+		int i, j, mincost = 0;
+
+		Scanner in = new Scanner(System.in);
+
+		System.out.println("********* PRIMS ALGORITHM *********");
+
+		System.out.println("Enter the number of nodes");
+		int n = in.nextInt();
+
+		System.out.println("Enter the cost matrix");
+		for(i = 1; i <= n; i++)
+		{
+			for(j = 1; j <= n; j++)
+			{
+				cost[i][j] = in.nextInt();
+			}
+		}
+
+		System.out.println("The entered cost matrix is");
+		for(i = 1; i <= n; i++)
+		{
+			for(j = 1; j <= n; j++)
+			{
+				System.out.print(cost[i][j] + "\t");
+			}
+			System.out.println();
+		}
+
+		System.out.println("Minimum Spanning Tree Edges and costs are : ");
+
+		mincost = pr(cost, n, mincost);
+
+		System.out.println("The minimum spanning tree cost is : " + mincost);
+
+		System.out.println("******* ********************* *******");
+	}
+
+	static int pr(int cost[][], int n, int mincost)
+	{
+		int nearV[] = new int[10], t[][] = new int[10][3], u = 0, i, j, k;
+
+		for(i = 2; i <= n; i++)
+			nearV[i] = 1;
+
+		nearV[1] = 0;
+
+		for(i = 1; i < n; i++)
+		{
+			int min = 999;
+
+			for(j = 1; j <= n; j++)
+			{
+				if(nearV[j] != 0 && cost[j][nearV[j]] < min)
+				{
+					min = cost[j][nearV[j]];
+					u = j;
+				}
+			}
+
+			t[i][1] = u;
+			t[i][2] = nearV[u];
+			mincost += min;
+			nearV[u] = 0;
 
-#Import dataset
-dataset = pd.read_csv('Linear Regression.csv')
+			for(k = 1; k <= n; k++)
+			{
+				if(nearV[k] != 0 && cost[k][nearV[k]] > cost[k][u])
+					nearV[k] = u;
+			}
 
-X = dataset.iloc[:,:-1].values
-y = dataset.iloc[:,1].values
+			System.out.println(i + " Minimum edge is " + t[i][1] + "," + t[i][2] + " and its cost is :" + min);
+		}
 
-#split the data into training and testing sets
-from sklearn.model_selection import train_test_split
+		return mincost;
+	}
+}
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1/3, random_state=0)
 
-#fitting linear regression to training set
-from sklearn.linear_model import LinearRegression
+DIJIKTRAS
 
-regressor = LinearRegression()
-regressor.fit(X_train, y_train)
+import java.util.*;
 
-#make predictions on the test set
-y_pred = regressor.predict(X_test)
+public class Dijikstra
+{
+    public int distance[]=new int[10];
+    public int cost[][]=new int[10][10];
 
-#plot the training data, the fitted line, and the test data
-plt.scatter(X_train, y_train, color='red', label='Training Data')
-plt.plot(X_train, regressor.predict(X_train), color='blue')
+    public void calc(int n,int s)
+    {
+        int flag[]=new int[n+1];
+        int i,minpos=1,k,c,minimum;
 
-plt.scatter(X_test, y_test, color='yellow')
-plt.plot(X_train, regressor.predict(X_train), color='blue')
+        for(i=1;i<=n;i++)
+        {
+            flag[i]=0;
+            this.distance[i]=this.cost[s][i];
+        }
 
-plt.xlabel('Years')
-plt.ylabel('Salary')
-plt.title('Salary vs Years')
+        c=2;
 
-plt.show()
+        while(c<=n)
+        {
+            minimum=999;
 
-LOGISTIC REGRESSION 
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
+            for(k=1;k<=n;k++)
+            {
+                if(this.distance[k]<minimum && flag[k]!=1)
+                {
+                    minimum=this.distance[i];
+                    minpos=k;
+                }
+            }
 
-iris = datasets.load_iris()
+            flag[minpos]=1;
+            c++;
 
-X = iris.data
-y = iris.target
+            for(k=1;k<=n;k++)
+            {
+                if(this.distance[minpos]+this.cost[minpos][k]<this.distance[k] && flag[k]!=1)
+                    this.distance[k]=this.distance[minpos]+this.cost[minpos][k];
+            }
+        }
+    }
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.3, random_state=0
-)
+    public static void main(String[] args)
+    {
+        int nodes,source,i,j;
 
-scaler = StandardScaler()
+        Scanner in=new Scanner(System.in);
 
-X_train = scaler.fit_transform(X_train)
-X_test = scaler.transform(X_test)
+        System.out.println("Enter the number of nodes");
+        nodes=in.nextInt();
 
-model = LogisticRegression()
+        Dijikstra d=new Dijikstra();
 
-model.fit(X_train, y_train)
+        System.out.println("Enter the cost Matrix Weights");
 
-y_pred = model.predict(X_test)
+        for(i=1;i<=nodes;i++)
+            for(j=1;j<=nodes;j++)
+            {
+                d.cost[i][j]=in.nextInt();
 
-from sklearn.metrics import confusion_matrix
+                if(d.cost[i][j]==0)
+                    d.cost[i][j]=999;
+            }
 
-cm = confusion_matrix(y_test, y_pred)
+        System.out.println("Enter the source vertex");
+        source=in.nextInt();
 
-print("Confusion matrix: ")
-print(cm)
+        d.calc(nodes, source);
 
-accuracy = accuracy_score(y_test, y_pred)
+        System.out.println("The shortest path from source "+source+" to all other vertices are");
 
-print("Accuracy: ", accuracy)
+        for(i=1;i<=nodes;i++)
+            if(i!=source)
+                System.out.println("Source: "+source+" destination : "+i+"Mincost : "+d.distance[i]+" \t");
+    }
+}
 
-KMEANS
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.cluster import KMeans
-import pandas as pd
-import numpy as np
 
-# import some data to play with
-iris = datasets.load_iris()
+WARSHALLS
 
-X = pd.DataFrame(iris.data)
+package warshal;
 
-X.columns = ['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+import java.util.Scanner;
 
-y = pd.DataFrame(iris.target)
+public class Warshalls {
 
-y.columns = ['Targets']
+	void flyd(int[][] w,int n)
+	{
+		int i,j,k;
 
-# Build the K Means Model
-model = KMeans(n_clusters=3)
+		for(k=1;k<=n;k++)
+			for(i=1;i<=n;i++)
+				for(j=1;j<=n;j++)
+					w[i][j]=(w[i][j]!=0)||((w[i][k]!=0) && (w[k][j]!=0))?1:0;
+	}
 
-# model.labels_ : Gives cluster no for which samples belongs to
-model.fit(X)
+	public static void main(String[] args)
+	{
+		int a[][]=new int[10][10];
+		int n,i,j;
 
-# Visualise the clustering results
-plt.figure(figsize=(14,14))
+		System.out.println("Enter no of vertices");
 
-colormap = np.array(['red', 'lime', 'black'])
+		Scanner sc=new Scanner(System.in);
 
-# Plot the Original Classifications using Petal features
-plt.subplot(2, 2, 1)
+		n=sc.nextInt();
 
-plt.scatter(X.Petal_Length, X.Petal_Width,
-            c=colormap[y.Targets], s=40)
+		System.out.println("Enter the weighted matrix");
 
-plt.title('Real Clusters')
+		for(i=1;i<=n;i++)
+			for(j=1;j<=n;j++)
+				a[i][j]=sc.nextInt();
 
-plt.xlabel('Petal Length')
+		Warshalls f = new Warshalls();
 
-plt.ylabel('Petal Width')
+		f.flyd(a, n);
 
-plt.show()
+		System.out.println("The shortest path matrix is");
 
-# Plot the Models Classifications
-plt.subplot(2, 2, 2)
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				System.out.print(a[i][j]+" ");
+			}
+			System.out.println();
+		}
 
-plt.scatter(X.Petal_Length, X.Petal_Width,
-            c=colormap[model.labels_], s=40)
+		sc.close();
+	}
+}
 
-plt.title('K-Means Clustering')
+FLOYDS
+package floyed;
 
-plt.xlabel('Petal Length')
+import java.util.*;
 
-plt.ylabel('Petal Width')
+public class Floyds {
 
-plt.show()
+	void flyd(int[][] w,int n)
+	{
+		int i,j,k;
 
+		for(k=1;k<=n;k++)
+			for(i=1;i<=n;i++)
+				for(j=1;j<=n;j++)
+					w[i][j]=Math.min(w[i][j], w[i][k]+w[k][j]);
+	}
 
+	public static void main(String[] args)
+	{
+		int a[][]=new int[10][10];
+		int n,i,j;
 
-EM ALGORITHM
-import matplotlib.pyplot as plt
-from sklearn import datasets
-from sklearn.cluster import KMeans
-import pandas as pd
-import numpy as np
+		System.out.println("Enter no of vertices");
 
-# import some data to play with
-iris = datasets.load_iris()
+		Scanner sc=new Scanner(System.in);
 
-X = pd.DataFrame(iris.data)
+		n=sc.nextInt();
 
-X.columns = ['Sepal_Length','Sepal_Width','Petal_Length','Petal_Width']
+		System.out.println("Enter the weighted matrix");
 
-y = pd.DataFrame(iris.target)
+		for(i=1;i<=n;i++)
+			for(j=1;j<=n;j++)
+				a[i][j]=sc.nextInt();
 
-y.columns = ['Targets']
+		Floyds f = new Floyds();
 
-# Build the K Means Model
-model = KMeans(n_clusters=3)
+		f.flyd(a, n);
 
-# model.labels_ : Gives cluster no for which samples belongs to
-model.fit(X)
+		System.out.println("The shortest path matrix is");
 
-# Visualise the clustering results
-plt.figure(figsize=(14,14))
+		for(i=1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+			{
+				System.out.print(a[i][j]+" ");
+			}
+			System.out.println();
+		}
 
-colormap = np.array(['red', 'lime', 'black'])
+		sc.close();
+	}
+}
 
-# General EM for GMM
-from sklearn import preprocessing
+KNAPSACK
+package dynamic;
 
-# transform your data such that its distribution will have a
-# mean value 0 and standard deviation of 1.
-scaler = preprocessing.StandardScaler()
+import java.util.Scanner;
 
-scaler.fit(X)
+public class DKnapsack {
 
-xsa = scaler.transform(X)
+	int n, c, p[], w[], v[][];
 
-xs = pd.DataFrame(xsa, columns = X.columns)
+	public DKnapsack(int n, int c, int[] p, int[] w)
+	{
+		this.n = n;
+		this.c = c;
+		this.p = p;
+		this.w = w;
+		this.v = new int[n + 1][c + 1];
+	}
 
-from sklearn.mixture import GaussianMixture
+	void compute()
+	{
+		for (int i = 0; i <= n; ++i)
+		{
+			for (int j = 0; j <= c; ++j)
+			{
+				if (i == 0 || j == 0)
+				{
+					v[i][j] = 0;
+				}
+				else
+				{
+					if (j - w[i] >= 0)
+					{
+						v[i][j] = max(v[i - 1][j], p[i] + v[i - 1][j - w[i]]);
+					}
+					else
+					{
+						v[i][j] = v[i - 1][j];
+					}
+				}
+			}
+		}
 
-gmm = GaussianMixture(n_components=3)
+		System.out.println("Optimal Solution: " + v[n][c]);
 
-gmm.fit(xs)
+		traceback();
+	}
 
-gmm_y = gmm.predict(xs)
+	void traceback()
+	{
+		System.out.println("The objects picked up into knapsack are: ");
 
-plt.subplot(2, 2, 3)
+		int i = n;
+		int j = c;
 
-plt.scatter(X.Petal_Length, X.Petal_Width,
-            c=colormap[gmm_y], s=40)
+		while (i > 0)
+		{
+			if (v[i][j] != v[i - 1][j])
+			{
+				System.out.print(i + " ");
+				j = j - w[i];
+			}
+			i--;
+		}
+	}
 
-plt.title('GMM Clustering')
+	private int max(int i, int j)
+	{
+		return (i > j) ? i : j;
+	}
 
-plt.xlabel('Petal Length')
+	public static void main(String[] args)
+	{
+		int n;
+		int c;
 
-plt.ylabel('Petal Width')
+		Scanner sc = new Scanner(System.in);
 
-plt.show()
+		System.out.println("Enter number of objects");
 
-print('Observation: The GMM using EM algorithm based clustering matched the true labels more closely than the Kmeans.')
+		n = sc.nextInt();
 
+		int[] p = new int[n + 1];
+		int[] w = new int[n + 1];
 
-APRIORI
-from itertools import combinations
+		System.out.println("Enter capacity of knapsack");
 
-# Transaction Dataset
-transactions = [
-    ['Milk', 'Bread', 'Butter'],
-    ['Bread', 'Butter'],
-    ['Milk', 'Bread'],
-    ['Milk', 'Butter'],
-    ['Milk', 'Bread', 'Butter']
-]
+		c = sc.nextInt();
 
-# Minimum support count
-min_support = 2
+		System.out.println("Enter the profit for each of the " + n + " objects");
 
-# Function to calculate support count
-def get_support(itemset, transactions):
-    count = 0
+		for (int i = 1; i <= n; i++)
+		{
+			p[i] = sc.nextInt();
+		}
 
-    for transaction in transactions:
-        if itemset.issubset(set(transaction)):
-            count += 1
+		System.out.println("Enter weight for each of the " + n + " objects");
 
-    return count
+		for (int i = 1; i <= n; i++)
+		{
+			w[i] = sc.nextInt();
+		}
 
-# Step 1: Generate Frequent 1-itemsets
-items = set()
+		DKnapsack dk = new DKnapsack(n, c, p, w);
 
-for transaction in transactions:
-    for item in transaction:
-        items.add(frozenset([item]))
+		dk.compute();
 
-frequent_itemsets = dict()
+		sc.close();
+	}
+}
 
-current_L = dict()
+TSP
 
-print("Frequent 1-itemsets:")
+package dynamicprogramming;
 
-for item in items:
-    support = get_support(set(item), transactions)
+import java.util.*;
 
-    if support >= min_support:
-        current_L[item] = support
-        print(set(item), "Support =", support)
+public class TSP {
 
-k = 2
+	public static void main(String[] args)
+	{
+		Scanner sc=new Scanner(System.in);
 
-# Store all frequent itemsets
-frequent_itemsets.update(current_L)
+		int c[][]=new int[10][10],tour[]=new int[10];
+		int i,j,cost;
 
-# Step 2 onwards
-while current_L:
-    candidates = set()
+		System.out.println("Enter no of cities");
 
-    current_items = list(current_L.keys())
+		int n=sc.nextInt();
 
-    # Generate candidate itemsets
-    for i in range(len(current_items)):
-        for j in range(i + 1, len(current_items)):
-            union_set = current_items[i].union(current_items[j])
+		if(n==1)
+		{
+			System.out.println("Path is not possible");
+			System.exit(0);
+		}
 
-            if len(union_set) == k:
-                candidates.add(union_set)
+		System.out.println("Enter the cost matrix");
 
-    current_C = dict()
+		for(i=1;i<=n;i++)
+			for(j=1;j<=n;j++)
+				c[i][j]=sc.nextInt();
 
-    # Calculate support for candidates
-    for candidate in candidates:
-        support = get_support(set(candidate), transactions)
+		for(i=1;i<=n;i++)
+			tour[i]=i;
 
-        if support >= min_support:
-            current_C[candidate] = support
+		cost=tspdp(c,tour,1,n);
 
-    # Print frequent k-itemsets
-    if current_C:
-        print(f"\nFrequent {k}-itemsets:")
+		System.out.println("the optimal tour is = ");
 
-        for itemset, support in current_C.items():
-            print(set(itemset), "Support =", support)
+		for(i=1;i<=n;i++)
+			System.out.print(tour[i]+"->");
 
-    # Update frequent itemsets
-    frequent_itemsets.update(current_C)
+		System.out.println("1");
 
-    current_L = current_C
+		System.out.println("\tMin Cost=" +cost);
+	}
 
-    k += 1
+	static int tspdp(int c[][],int tour[],int start,int n)
+	{
+		int mintour[]=new int[10],temp[]=new int[10],mincost=999,ccost,i,j,k;
 
-# Association Rule Generation
-print("\nAssociation Rules:")
+		if(start==n-1)
+			return (c[tour[n-1]][tour[n]]+c[tour[n]][1]);
 
-for itemset in frequent_itemsets:
-    if len(itemset) >= 2:
-        for i in range(1, len(itemset)):
-            subsets = combinations(itemset, i)
+		for(i=start+1;i<=n;i++)
+		{
+			for(j=1;j<=n;j++)
+				temp[j]=tour[j];
 
-            for subset in subsets:
-                subset = frozenset(subset)
+			temp[start+1]=tour[i];
+			temp[i]=tour[start+1];
 
-                remain = itemset - subset
+			if((c[tour[start]][tour[i]]+(ccost=tspdp(c,temp,start+1,n)))<mincost)
+			{
+				mincost=c[tour[start]][tour[i]]+ccost;
 
-                support_itemset = frequent_itemsets[itemset]
-                support_subset = frequent_itemsets[subset]
+				for(k=1;k<=n;k++)
+					mintour[k]=temp[k];
+			}
+		}
 
-                confidence = support_itemset / support_subset
+		for(i=1;i<=n;i++)
+			tour[i]=mintour[i];
 
-                print(f"{set(subset)} => {set(remain)}")
-                print("Confidence =", round(confidence * 100, 2), "%\n")
+		return mincost;
+	}
+}
 
-PCA
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
+N-QUEEN
 
-%matplotlib inline
+package sampleprogram1;
 
-from sklearn.datasets import load_breast_cancer
+import java.util.*;
 
-cancer = load_breast_cancer()
+public class Queen {
 
-cancer.keys()
+	public static boolean isSafe(int row,int col,char[][] board) {
 
-print(cancer['feature_names'])
+		for(int j=0;j<board.length;j++) {
+			if(board[row][j]=='Q') {
+				return false;
+			}
+		}
 
-for i in range(len(cancer.target_names)):
-    print("Label", i, "-", str(cancer.target_names[i]))
+		for(int i=0;i<board.length;i++) {
+			if(board[i][col]=='Q') {
+				return false;
+			}
+		}
 
-print(cancer['DESCR'])
+		int r=row;
 
-df = pd.DataFrame(cancer['data'],
-                  columns=cancer['feature_names'])
+		for(int c=col;c>=0 && r>=0;c--,r--) {
+			if(board[r][c]=='Q') {
+				return false;
+			}
+		}
 
-df.head(5)
+		r=row;
 
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import StandardScaler
+		for(int c=col;c<board.length && r>=0;r--,c++) {
+			if(board[r][c]=='Q') {
+				return false;
+			}
+		}
 
-scaler = StandardScaler()
+		r=row;
 
-scaler.fit(df)
+		for(int c=col;c>=0 && r<board.length;r++,c--) {
+			if(board[r][c]=='Q') {
+				return false;
+			}
+		}
 
-scaled_data = scaler.transform(df)
+		r=row;
 
-scaled_data
+		for(int c=col;c<board.length && r<board.length;c++,r++) {
+			if(board[r][c]=='Q') {
+				return false;
+			}
+		}
 
-from sklearn.decomposition import PCA
+		return true;
+	}
 
-pca = PCA(n_components=2)
+	public static void saveBoard(char[][]board,List<List<String>>allBoards)
+	{
+		String row="";
+		List<String> newBoard = new ArrayList<>();
 
-pca.fit(scaled_data)
+		for(int i=0;i<board.length;i++) {
+			row="";
 
-x_pca = pca.transform(scaled_data)
+			for(int j=0;j<board[0].length;j++) {
+				if(board[i][j]=='Q')
+					row+='Q';
+				else
+					row+='.';
+			}
 
-scaled_data.shape
+			newBoard.add(row);
+		}
 
-x_pca.shape
+		allBoards.add(newBoard);
+	}
 
-scaled_data
+	public static void solve(char[][] board,List<List<String>> allBoards,int col)
+	{
+		if(col==board.length) {
+			saveBoard(board,allBoards);
+			return;
+		}
 
-x_pca
+		for(int row=0;row<board.length;row++) {
+			if(isSafe(row,col,board)) {
+				board[row][col]='Q';
+				solve(board,allBoards,col+1);
+				board[row][col]='.';
+			}
+		}
+	}
 
-plt.figure(figsize=(8,6))
+	public static void solution(int n) {
 
-plt.scatter(x_pca[:,0],
-            x_pca[:,1],
-            c=cancer['target'])
+		List<List<String>> allBoards=new ArrayList<>();
+		char[][] board=new char[n][n];
 
-plt.xlabel('First principle component')
+		solve(board,allBoards,0);
 
-plt.ylabel('Second principle component')
+		for(List<String> aboard:allBoards) {
+			for(int i=0;i<aboard.size();i++) {
+				System.out.println(aboard.get(i));
+			}
+			System.out.println();
+		}
+	}
 
+	public static void main(String[] args) {
+		solution(4);
+	}
+}
 
+SUBSET
+package branchsub;
+
+import java.util.*;
+
+public class Subset {
+
+	static int c=0;
+
+	public static void main(String[] args) {
+
+		int w[]=new int[10];
+		int n,d,i,sum=0;
+		int x[]=new int[10];
+
+		Scanner sc=new Scanner(System.in);
+
+		System.out.println("****SUBSET PROBLEM****");
+
+		System.out.println("Enter the no of elements");
+		n=sc.nextInt();
+
+		System.out.println("Enter the elements in increasing order");
+
+		for(i=0;i<n;i++)
+			w[i]=sc.nextInt();
+
+		System.out.println("Enter the value of d:");
+		d=sc.nextInt();
+
+		for(i=0;i<n;i++)
+			sum=sum+w[i];
+
+		System.out.println("SUM:"+sum);
+
+		if(sum<d||w[0]>d)
+		{
+			System.out.println("Subset is not possible");
+			System.out.println("*****************");
+			System.exit(0);
+		}
+
+		finalsubset(0,0,sum,x,w,d);
+
+		if(c==0)
+			System.out.println("subset is not possible");
+
+		System.out.println("\n *********");
+
+		sc.close();
+	}
+
+	static void finalsubset(int cs,int k,int r,int x[],int w[],int d) {
+
+		x[k]=1;
+
+		if(cs+w[k]==d) {
+
+			c++;
+
+			System.out.println("\nSolution "+c+" is {");
+
+			for(int i=0;i<=k;i++)
+				if(x[i]==1) {
+					System.out.print(w[i]+" ");
+				}
+
+			System.out.print("}");
+		}
+
+		else if((cs+w[k]+w[k+1])<=d)
+
+			finalsubset(cs+w[k],k+1,r-w[k],x,w,d);
+
+		if((cs+r-w[k])>=d && (cs+w[k+1])<=d) {
+
+			x[k]=0;
+
+			finalsubset(cs,k+1,r-w[k],x,w,d);
+		}
+	}
+}
+
+KRUSKAL
+
+import java.util.Scanner;
+
+public class kruskalUnion
+{
+	static int [] parent = new int[50];
+	static int [][] cost = new int[10][10];
+	static int a,b,i,j,u,v,n,min,noe=1,mincost=0;
+
+	static int find(int w)
+	{
+		while(parent[w] != 0)
+			w = parent[w];
+
+		return w;
+	}
+
+	static void union()
+	{
+		if(u != v)
+		{
+			noe++;
+
+			System.out.println(noe-1 + "Edge(" + a + "," + b + ")=" + min);
+
+			mincost += min;
+
+			parent[v] = u;
+		}
+
+		cost[a][b] = cost[b][a] = 999;
+	}
+
+	public static void main(String[] args)
+	{
+		Scanner read = new Scanner(System.in);
+
+		System.out.println("Enter the no. of vertices:");
+
+		n = read.nextInt();
+
+		System.out.println("Enter the cost adjacency matrix, 999 for no direct path:");
+
+		for(i=1;i<=n;i++)
+			for(j=1;j<=n;j++)
+				cost[i][j] = read.nextInt();
+
+		while(noe < n)
+		{
+			min = 999;
+
+			for(i=1; i<=n; i++)
+			{
+				for(j=1; j<=n; j++)
+				{
+					if(cost[i][j] < min)
+					{
+						min = cost[i][j];
+						a = u = i;
+						b = v = j;
+					}
+				}
+			}
+
+			u = find(u);
+			v = find(v);
+
+			union();
+		}
+
+		System.out.println("minimum cost =" + mincost);
+	}
+}
+HAMILTON
+import java.util.Scanner;
+
+public class P12new {
+
+	static int[] x = new int[25];
+
+	static void Next_Vertex(int G[][], int n, int k)
+	{
+		int j;
+
+		while(true)
+		{
+			x[k] = (x[k] + 1) % (n + 1);
+
+			if(x[k] == 0)
+				return;
+
+			if(G[x[k - 1]][x[k]] != 0)
+			{
+				for(j = 1; j <= k - 1; j++)
+				{
+					if(x[j] == x[k])
+						break;
+				}
+
+				if(j == k)
+				{
+					if((k < n) || ((k == n) && (G[x[n]][x[1]] != 0)))
+						return;
+				}
+			}
+		}
+	}
+
+	static void H_Cycle(int G[][], int n, int k)
+	{
+		int i;
+
+		while(true)
+		{
+			Next_Vertex(G, n, k);
+
+			if(x[k] == 0)
+				return;
+
+			if(k == n)
+			{
+				System.out.println("\n");
+
+				for(i = 1; i <= n; i++)
+					System.out.print(x[i] + "-->");
+
+				System.out.println(x[1]);
+			}
+			else
+				H_Cycle(G, n, k + 1);
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		int i, j, n;
+
+		int[][] G = new int[25][25];
+
+		Scanner read = new Scanner(System.in);
+
+		System.out.println("Enter the number of vertices of the graph");
+
+		n = read.nextInt();
+
+		System.out.println("Enter the Path adjacency matrix");
+
+		for(i = 1; i <= n; i++)
+		{
+			for(j = 1; j <= n; j++)
+			{
+				G[i][j] = read.nextInt();
+				x[i] = 0;
+			}
+		}
+
+		x[1] = 1;
+
+		System.out.println(" \n Hamiltonian Cycles are");
+
+		H_Cycle(G, n, 2);
+	}
+}
 
 
 
